@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"sync"
 )
@@ -42,9 +41,19 @@ func (s *shortenServer) CreateURL(w http.ResponseWriter, r *http.Request) {
 	url := bodyData.Url
 	shortenURL := createShortenURL(url)
 
-	//fmt.Println("url is: ", shortenURL)
-	fmt.Fprintf(w, "url is: %s\n", shortenURL)
 	// Store new content on db
 
 	// Return response to user
+	responseData := ResponseCreatedURLData{
+		ID:        0,
+		URL:       url,
+		ShortCode: shortenURL,
+		CreatedAt: 0,
+		UpdatedAt: 0,
+	}
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(responseData); err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
 }

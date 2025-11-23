@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"sync"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -12,7 +12,6 @@ import (
 // Server struct and creation
 
 type shortenServer struct {
-	mu sync.Mutex
 	DB *pgxpool.Pool
 }
 
@@ -25,16 +24,14 @@ func CreateServer(databaseURL string) (Server, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	config.MaxConnLifetime = 3
+	config.MaxConnLifetime = 3 * time.Minute
 	config.MaxConns = 10
-
+	// Create DB Pool
 	pool, err := pgxpool.NewWithConfig(context.Background(), config)
 	if err != nil {
 		return nil, err
 	}
 	server.DB = pool
-
 	return server, err
 }
 
@@ -45,10 +42,7 @@ func (s *shortenServer) CloseServer() {
 // Server Handlers
 
 func (s *shortenServer) CreateURL(w http.ResponseWriter, r *http.Request) {
-	// Lock connection resources
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
+	// Check method for this endpoint
 	if r.Method != "POST" {
 		http.Error(w, "Only POST Method allowed", http.StatusMethodNotAllowed)
 		return

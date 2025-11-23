@@ -7,6 +7,7 @@ import (
 
 const _SHORTEN_LEN = 10
 
+// createShortenURL takes a string and returns a shorten version of it (hash)
 func createShortenURL(url string) string {
 	h := sha256.New()
 	h.Write([]byte(url))

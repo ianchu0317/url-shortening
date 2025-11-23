@@ -6,27 +6,40 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 // Server struct and creation
 
 type shortenServer struct {
 	mu sync.Mutex
-	DB *pgx.Conn
+	DB *pgxpool.Pool
 }
 
 // CreateServer(url) takes a database url and starts connection and initial configuration
 // if success, will return the server, if not err != nil
 func CreateServer(databaseURL string) (Server, error) {
 	server := &shortenServer{}
-	conn, err := pgx.Connect(context.Background(), databaseURL)
-	server.DB = conn
+	// Configuration for psql pool
+	config, err := pgxpool.ParseConfig(databaseURL)
+	if err != nil {
+		return nil, err
+	}
+
+	config.MaxConnLifetime = 3
+	config.MaxConns = 10
+
+	pool, err := pgxpool.NewWithConfig(context.Background(), config)
+	if err != nil {
+		return nil, err
+	}
+	server.DB = pool
+
 	return server, err
 }
 
 func (s *shortenServer) CloseServer() {
-	s.DB.Close(context.Background())
+	s.DB.Close()
 }
 
 // Server Handlers

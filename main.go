@@ -1,16 +1,23 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"url-shortening/server"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	fmt.Println("url es: ", os.Getenv("DATABASE_URL"))
+	// Load environment variables from .env if present (local dev)
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found or couldn't load it; falling back to environment variables")
+	}
+	// Create Server
 	app := server.CreateServer(os.Getenv("DATABASE_URL"))
+
+	// Start server
 	http.HandleFunc("/shorten", app.CreateURL)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

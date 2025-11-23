@@ -17,9 +17,11 @@ func main() {
 
 	// Create Server
 	app, err := server.CreateServer(os.Getenv("DATABASE_URL"))
+	defer app.CloseServer()
+
 	if err != nil {
-		app.CloseServer()
 		log.Fatalf("DB connection error, %v", err)
+		app.CloseServer()
 	}
 
 	// Start server

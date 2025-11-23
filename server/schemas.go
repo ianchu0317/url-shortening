@@ -12,6 +12,7 @@ type ResponseCreatedURLData struct {
 	ID        int    `json:"id"`
 	URL       string `json:"url"`
 	ShortCode string `json:"shortCode"`
-	CreatedAt int    `json:"createdAt"`
-	UpdatedAt int    `json:"updatedAt"`
+	CreatedAt string `json:"createdAt"`
+	UpdatedAt string `json:"updatedAt"`
+	Accessed  int    `json:"accessed"`
 }

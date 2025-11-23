@@ -16,6 +16,8 @@ type shortenServer struct {
 	DB *pgx.Conn
 }
 
+// CreateServer(url) takes a database url and starts connection and initial configuration
+// if success, will return the server, if not err != nil
 func CreateServer(databaseURL string) (Server, error) {
 	server := &shortenServer{}
 	conn, err := pgx.Connect(context.Background(), databaseURL)
@@ -52,15 +54,12 @@ func (s *shortenServer) CreateURL(w http.ResponseWriter, r *http.Request) {
 	shortenURL := createShortenURL(url)
 
 	// Store new content on db
-
-	// Return response to user
-	responseData := ResponseCreatedURLData{
-		ID:        0,
-		URL:       url,
-		ShortCode: shortenURL,
-		CreatedAt: 0,
-		UpdatedAt: 0,
+	responseData, err := s.saveShortenURL(url, shortenURL)
+	if err != nil {
+		http.Error(w, "Internal server error saving to db", http.StatusInternalServerError)
+		return
 	}
+	// Return response to user
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(responseData); err != nil {
 		http.Error(w, "Internal server error converting to JSON", http.StatusInternalServerError)

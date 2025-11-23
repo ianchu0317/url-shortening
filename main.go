@@ -10,12 +10,16 @@ import (
 )
 
 func main() {
-	// Load environment variables from .env if present (local dev)
+	// Load environment variables from .env if present
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found or couldn't load it; falling back to environment variables")
 	}
+
 	// Create Server
-	app := server.CreateServer(os.Getenv("DATABASE_URL"))
+	app, err := server.CreateServer(os.Getenv("DATABASE_URL"))
+	if err != nil {
+		log.Fatalf("DB connection error, %v", err)
+	}
 
 	// Start server
 	http.HandleFunc("/shorten", app.CreateURL)

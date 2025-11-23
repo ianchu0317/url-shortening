@@ -1,22 +1,26 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"sync"
+
+	"github.com/jackc/pgx/v5"
 )
 
 // Server struct and creation
 
 type shortenServer struct {
-	mu      sync.Mutex
-	_DB_URL string
+	mu sync.Mutex
+	DB *pgx.Conn
 }
 
-func CreateServer(databaseURL string) Server {
-	fmt.Println(databaseURL)
-	return &shortenServer{_DB_URL: databaseURL}
+func CreateServer(databaseURL string) (Server, error) {
+	server := &shortenServer{}
+	conn, err := pgx.Connect(context.Background(), databaseURL)
+	server.DB = conn
+	return server, err
 }
 
 // Server Handlers

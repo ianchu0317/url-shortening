@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -52,6 +53,7 @@ func (s *shortenServer) CreateURL(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	var bodyData CreateURLData
 	if err := json.NewDecoder(r.Body).Decode(&bodyData); err != nil {
+		log.Fatalf("Internal server error decoding body, %v", err)
 		http.Error(w, "Bad Request", http.StatusBadRequest)
 		return
 	}
@@ -60,6 +62,7 @@ func (s *shortenServer) CreateURL(w http.ResponseWriter, r *http.Request) {
 	url := bodyData.Url
 	urlInDB, err := s.isUrlInDB(url)
 	if err != nil {
+		log.Fatalf("Internal server error checking url in db, %v", err)
 		http.Error(w, "Internal server error checking url in db", http.StatusInternalServerError)
 		return
 	}
@@ -72,12 +75,15 @@ func (s *shortenServer) CreateURL(w http.ResponseWriter, r *http.Request) {
 	// Store new content on db
 	responseData, err := s.saveShortenURL(url, shortCode)
 	if err != nil {
+		log.Fatalf("Internal server error saving to db, %v", err)
 		http.Error(w, "Internal server error saving to db", http.StatusInternalServerError)
 		return
 	}
 	// Return response to user
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(w).Encode(responseData); err != nil {
+		log.Fatalf("Internal server error converting to JSON, %v", err)
 		http.Error(w, "Internal server error converting to JSON", http.StatusInternalServerError)
 		return
 	}

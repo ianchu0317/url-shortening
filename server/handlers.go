@@ -67,10 +67,10 @@ func (s *shortenServer) CreateURL(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "URL already in DB", http.StatusConflict)
 		return
 	}
-	shortenURL := createShortenURL(url)
+	shortCode := createShortCode(url)
 
 	// Store new content on db
-	responseData, err := s.saveShortenURL(url, shortenURL)
+	responseData, err := s.saveShortenURL(url, shortCode)
 	if err != nil {
 		http.Error(w, "Internal server error saving to db", http.StatusInternalServerError)
 		return

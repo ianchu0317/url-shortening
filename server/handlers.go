@@ -91,16 +91,27 @@ func (s *shortenServer) CreateURL(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *shortenServer) RetrieveURL(w http.ResponseWriter, r *http.Request) {
-	shortCode := r.PathValue("shortCode")
-	fmt.Fprintf(w, "short code is: %s", shortCode)
-
 	// Check GET Method only
 	if r.Method != "GET" {
 		http.Error(w, "Only GET Method allowed", http.StatusMethodNotAllowed)
 		return
 	}
+	shortCode := r.PathValue("shortCode")
+	fmt.Fprintf(w, "short code is: %s", shortCode)
 	// Check if url-short code in server
 
-	// Update Access Counter
+	// Update Access Counter / Get original url
+	responseData, err := s.retrieveOriginalURL(shortCode)
+	if err != nil {
+		log.Fatalf("Error retrieving url from DB, %v", err)
+		http.Error(w, "Error retrieving url from DB", http.StatusInternalServerError)
+	}
 	// Return original url -> Redirect
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(w).Encode(responseData); err != nil {
+		log.Fatalf("Internal server error converting to JSON, %v", err)
+		http.Error(w, "Internal server error converting to JSON", http.StatusInternalServerError)
+		return
+	}
 }

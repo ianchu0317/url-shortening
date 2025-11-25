@@ -138,8 +138,19 @@ func (s *shortenServer) UpdateURL(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Update data in DB
-
+	responseData, err := s.updateOriginalURL(bodyData.Url, shortCode)
+	if err != nil {
+		log.Fatalf("Error updating url from DB, %v", err)
+		http.Error(w, "Error updating url from DB", http.StatusInternalServerError)
+	}
 	// Return to user data
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(responseData); err != nil {
+		log.Fatalf("Internal server error converting to JSON, %v", err)
+		http.Error(w, "Internal server error converting to JSON", http.StatusInternalServerError)
+		return
+	}
 }
 
 func (s *shortenServer) HandleShortCode(w http.ResponseWriter, r *http.Request) {

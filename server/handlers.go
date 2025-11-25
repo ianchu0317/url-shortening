@@ -128,7 +128,6 @@ func (s *shortenServer) HandleShortCode(w http.ResponseWriter, r *http.Request) 
 		s.UpdateURL(w, r)
 	default:
 		ReturnError(w, nil, "Method not allowed", http.StatusMethodNotAllowed)
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 

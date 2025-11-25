@@ -130,6 +130,7 @@ func (s *shortenServer) DeleteURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Return No Content if success
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (s *shortenServer) HandleShortCode(w http.ResponseWriter, r *http.Request) {
@@ -138,6 +139,8 @@ func (s *shortenServer) HandleShortCode(w http.ResponseWriter, r *http.Request) 
 		s.RetrieveURL(w, r)
 	case http.MethodPut:
 		s.UpdateURL(w, r)
+	case http.MethodDelete:
+		s.DeleteURL(w, r)
 	default:
 		ReturnError(w, nil, "Method not allowed", http.StatusMethodNotAllowed)
 	}

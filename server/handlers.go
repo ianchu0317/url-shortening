@@ -80,13 +80,7 @@ func (s *shortenServer) CreateURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Return response to user
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	if err := json.NewEncoder(w).Encode(responseData); err != nil {
-		log.Fatalf("Internal server error converting to JSON, %v", err)
-		http.Error(w, "Internal server error converting to JSON", http.StatusInternalServerError)
-		return
-	}
+	ReturnJSON(w, r, responseData, http.StatusCreated)
 }
 
 func (s *shortenServer) RetrieveURL(w http.ResponseWriter, r *http.Request) {
@@ -134,14 +128,9 @@ func (s *shortenServer) UpdateURL(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("Error updating url from DB, %v", err)
 		http.Error(w, "Error updating url from DB", http.StatusInternalServerError)
 	}
-	// Return to user data
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(responseData); err != nil {
-		log.Fatalf("Internal server error converting to JSON, %v", err)
-		http.Error(w, "Internal server error converting to JSON", http.StatusInternalServerError)
-		return
-	}
+
+	// Return JSON to user data
+	ReturnJSON(w, r, responseData, http.StatusOK)
 }
 
 func (s *shortenServer) HandleShortCode(w http.ResponseWriter, r *http.Request) {
@@ -152,5 +141,18 @@ func (s *shortenServer) HandleShortCode(w http.ResponseWriter, r *http.Request) 
 		s.UpdateURL(w, r)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+// Helpers
+
+// ReturnJSON take a request and respond with JSON
+func ReturnJSON(w http.ResponseWriter, r *http.Request, responseData *ResponseCreatedURLData, statusCode int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	if err := json.NewEncoder(w).Encode(responseData); err != nil {
+		log.Fatalf("Internal server error converting to JSON, %v", err)
+		http.Error(w, "Internal server error converting to JSON", http.StatusInternalServerError)
+		return
 	}
 }

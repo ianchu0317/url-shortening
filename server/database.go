@@ -41,6 +41,7 @@ func (s *shortenServer) retrieveOriginalURL(shortCode string) (*ResponseCreatedU
 	return &res, nil
 }
 
+// updateOriginalURL takes new url and a shortCode. After created will return the updated data.
 func (s *shortenServer) updateOriginalURL(newURL, shortCode string) (*ResponseCreatedURLData, error) {
 	var res ResponseCreatedURLData
 	err := s.DB.QueryRow(
@@ -57,6 +58,8 @@ func (s *shortenServer) updateOriginalURL(newURL, shortCode string) (*ResponseCr
 	}
 	return &res, nil
 }
+
+// Auxiliar functions check if
 
 // isURLInDB(url) takes an URL and check if it is already in server.
 // If is in server it returns true, otherwise false

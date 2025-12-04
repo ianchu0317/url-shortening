@@ -145,7 +145,24 @@ func (s *shortenServer) DeleteURL(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *shortenServer) GetStatsURL(w http.ResponseWriter, r *http.Request) {
+	// Get Short code
+	shortCode := r.PathValue("shortCode")
 
+	// Check short code in DB
+	shortInDB, err := s.isShortCodeInDB(shortCode)
+	if err != nil {
+		ReturnError(w, err, "Error accessing DB", http.StatusInternalServerError)
+	}
+	if !shortInDB {
+		ReturnError(w, nil, "No shortCode in DB", http.StatusBadRequest)
+	}
+
+	// Retrieve short code stats
+	responseData, err := s.retrieveOriginalURL(shortCode)
+	if err != nil {
+		ReturnError(w, err, "Error accessing DB", http.StatusInternalServerError)
+	}
+	ReturnJSON(w, r, responseData, http.StatusOK)
 }
 
 func (s *shortenServer) HandleShortCode(w http.ResponseWriter, r *http.Request) {

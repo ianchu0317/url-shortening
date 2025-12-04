@@ -23,4 +23,7 @@ type Server interface {
 
 	// Handles Requests from endpoint /shorten/{shortCode}
 	HandleShortCode(w http.ResponseWriter, r *http.Request)
+
+	// Handles requests for getting URL stats
+	GetStatsURL(w http.ResponseWriter, r *http.Request)
 }

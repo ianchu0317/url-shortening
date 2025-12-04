@@ -144,6 +144,10 @@ func (s *shortenServer) DeleteURL(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+func (s *shortenServer) GetStatsURL(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func (s *shortenServer) HandleShortCode(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:

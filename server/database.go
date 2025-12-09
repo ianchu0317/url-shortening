@@ -36,9 +36,22 @@ func (s *shortenServer) retrieveOriginalURL(shortCode string) (*ResponseCreatedU
 		shortCode,
 	).Scan(&res.ID, &res.URL, &res.ShortCode, &res.CreatedAt, &res.UpdatedAt, &res.Accessed)
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
 	return &res, nil
+}
+
+// updateAccessCount updates de access counter given a shortCode
+func (s *shortenServer) updateAccessCount(shortCode string) error {
+	_, err := s.DB.Exec(
+		context.Background(),
+		`UPDATE shortened SET accessed=(accessed+1) WHERE short_code=$1`,
+		shortCode,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // updateOriginalURL takes new url and a shortCode. After created will return the updated data.

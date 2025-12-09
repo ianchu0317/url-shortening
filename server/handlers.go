@@ -85,7 +85,13 @@ func (s *shortenServer) RetrieveURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Update Access Counter / Get original url
+	// Update Access Counter
+	err = s.updateAccessCount(shortCode)
+	if err != nil {
+		ReturnError(w, err, "Error updating url count from DB", http.StatusInternalServerError)
+		return
+	}
+	// Retrieve Original URL
 	responseData, err := s.retrieveOriginalURL(shortCode)
 	if err != nil {
 		ReturnError(w, err, "Error retrieving url from DB", http.StatusInternalServerError)

@@ -13,6 +13,8 @@ Simple URL Shortening Service in Go
 
 ## Endpoints requests and response format
 
+<details>
+
 ### Create Short URL
 
 Create short URL using POST method.
@@ -65,7 +67,7 @@ PUT /shorten/abc123
 
 The endpoint validate the request body and return a `200 OK` status code with the updated short URL i.e.
 
-```
+```json
 {
     "id": 1,
     "url": "https://www.example.com/some/updated/url",
@@ -90,4 +92,27 @@ DELETE /shorten/abc123
 The endpoint should return a `204 No Content` status code if the short URL was successfully deleted or a `404 Not Found` status code if the short URL was not found.
 
 
-###
+### Get URL Statistics
+
+Get statistics for a short URL using the `GET` method
+
+```
+GET /shorten/abc123/stats
+```
+
+The endpoint should return a 200 OK status code with the statistics i.e.
+
+```json
+{
+  "id": "1",
+  "url": "https://www.example.com/some/long/url",
+  "shortCode": "abc123",
+  "createdAt": "2021-09-01T12:00:00Z",
+  "updatedAt": "2021-09-01T12:00:00Z",
+  "accessCount": 10
+}
+```
+
+or a `404 Not Found` status code if the short URL was not found.
+
+</details>

@@ -62,14 +62,26 @@ func (s *shortenServer) CreateURL(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create Random URL Short code
-	shortCode := createShortCode(_url)
+	shortInDB := true
+	var shortCode string
+	for shortInDB {
+		shortCode = createShortCode()
+		shortInDB, err = s.isShortCodeInDB(shortCode)
+		// ERROR with database connection
+		if err != nil {
+			ReturnError(w, err, "Error checking short code in db", http.StatusInternalServerError)
+			return
+		}
+	}
+
 	// Store new content on db
 	responseData, err := s.saveShortenURL(_url, shortCode)
 	if err != nil {
 		ReturnError(w, err, "Internal server error with DB", http.StatusInternalServerError)
 		return
 	}
-	// Return response to user
+
+	// Return response to user (STATUS OK)
 	ReturnJSON(w, r, responseData, http.StatusCreated)
 }
 

@@ -1,29 +1,26 @@
 package server
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"log"
+	"math/rand"
 	"net/http"
+	"time"
 )
 
-const _SHORTEN_LEN = 10
+const (
+	SHORTEN_LEN = 5
+	CHARSET     = "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+)
 
 // createShortenURL takes a string and returns a shorten version of it (hash)
-func createShortCode(url string) string {
-	h := sha256.New()
-	h.Write([]byte(url))
-	hashBytes := h.Sum(nil)
-
-	// Encode the hash to a hexadecimal string
-	hexHash := hex.EncodeToString(hashBytes)
-
-	// Return a truncated portion of the hex hash
-	if len(hexHash) > _SHORTEN_LEN {
-		return hexHash[:_SHORTEN_LEN]
+func createShortCode() string {
+	seededRand := rand.New(rand.NewSource(time.Now().UnixNano()))
+	b := make([]byte, SHORTEN_LEN)
+	for i := range b {
+		b[i] = CHARSET[seededRand.Intn(len(CHARSET))]
 	}
-	return hexHash
+	return string(b)
 }
 
 // Helpers - Auxiliar functions

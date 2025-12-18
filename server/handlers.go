@@ -80,8 +80,9 @@ func (s *shortenServer) RetrieveURL(w http.ResponseWriter, r *http.Request) {
 		ReturnError(w, err, "Error checking short code in db", http.StatusInternalServerError)
 		return
 	}
+	// Not Found 404
 	if !shortInDB {
-		ReturnError(w, err, "Error short code not in db", http.StatusBadRequest)
+		ReturnError(w, err, "Error short code not in db", http.StatusNotFound)
 		return
 	}
 
@@ -106,9 +107,22 @@ func (s *shortenServer) UpdateURL(w http.ResponseWriter, r *http.Request) {
 	// Get short code
 	shortCode := r.PathValue("shortCode")
 
+	// Check if url-short code in server
+	shortInDB, err := s.isShortCodeInDB(shortCode)
+	if err != nil {
+		ReturnError(w, err, "Error checking short code in db", http.StatusInternalServerError)
+		return
+	}
+	// Not Found 404
+	if !shortInDB {
+		ReturnError(w, err, "Error short code not in db", http.StatusNotFound)
+		return
+	}
+
 	// Read body data
 	defer r.Body.Close()
 	var bodyData CreateURLData
+	// Bad Request 400
 	if err := json.NewDecoder(r.Body).Decode(&bodyData); err != nil {
 		ReturnError(w, err, "Internal server error decoding body", http.StatusBadRequest)
 		return
@@ -121,7 +135,7 @@ func (s *shortenServer) UpdateURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Return JSON to user data
+	// Return JSON to user data (Status OK 200)
 	ReturnJSON(w, r, responseData, http.StatusOK)
 }
 
@@ -135,6 +149,7 @@ func (s *shortenServer) DeleteURL(w http.ResponseWriter, r *http.Request) {
 		ReturnError(w, err, "Error accessing DB", http.StatusInternalServerError)
 		return
 	}
+	// Not found 404
 	if !shortInDB {
 		ReturnError(w, nil, "Invalid short code", http.StatusNotFound)
 		return
@@ -146,7 +161,7 @@ func (s *shortenServer) DeleteURL(w http.ResponseWriter, r *http.Request) {
 		ReturnError(w, err, "Error deleting url from DB", http.StatusInternalServerError)
 		return
 	}
-	// Return No Content if success
+	// Return 204 No Content if success
 	w.WriteHeader(http.StatusNoContent)
 }
 
@@ -159,6 +174,7 @@ func (s *shortenServer) GetStatsURL(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		ReturnError(w, err, "Error accessing DB", http.StatusInternalServerError)
 	}
+	// Not found 404
 	if !shortInDB {
 		ReturnError(w, nil, "No shortCode in DB", http.StatusBadRequest)
 	}
@@ -168,6 +184,8 @@ func (s *shortenServer) GetStatsURL(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		ReturnError(w, err, "Error accessing DB", http.StatusInternalServerError)
 	}
+
+	// 200 Status OK
 	ReturnJSON(w, r, responseData, http.StatusOK)
 }
 

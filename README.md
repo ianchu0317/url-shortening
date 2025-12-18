@@ -77,3 +77,17 @@ The endpoint validate the request body and return a `200 OK` status code with th
 ```
 
 It returns `400 Bad Request` if have bad requests or `404 Not Found` if status code not in server.
+
+
+### Delete Short URL
+
+Delete an existing short URL using the `DELETE` method.
+
+```
+DELETE /shorten/abc123
+```
+
+The endpoint should return a `204 No Content` status code if the short URL was successfully deleted or a `404 Not Found` status code if the short URL was not found.
+
+
+###

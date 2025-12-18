@@ -39,4 +39,16 @@ The server responds with `201 Created` and the new shortend URL.
 It returns `400 Bad Request` in case of URL validation errors.
 
 
-###
+### Retrieve Original URL
+
+Retrieve the original URL from a short URL using the `GET` method.
+
+```
+GET /shorten/abc123
+```
+
+The endpoint should return a `200 OK` status code and redirect to original URL.
+
+If not found (short code doesn't exist), it will return `404 Not Found`.
+
+

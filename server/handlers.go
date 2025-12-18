@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -44,25 +45,26 @@ func (s *shortenServer) CloseServer() {
 func (s *shortenServer) CreateURL(w http.ResponseWriter, r *http.Request) {
 	// Read body content
 	defer r.Body.Close()
+	// 400 Bad Request (JSON Bad request)
 	var bodyData CreateURLData
 	if err := json.NewDecoder(r.Body).Decode(&bodyData); err != nil {
 		ReturnError(w, err, "Bad Request", http.StatusBadRequest)
 		return
 	}
-	// Get URL from Body and get shorten url (if its unique)
-	url := bodyData.Url
-	urlInDB, err := s.isUrlInDB(url)
+
+	// Verify URL
+	_url := bodyData.Url
+	// 400 Bad Request (invalid URL)
+	_, err := url.ParseRequestURI(_url)
 	if err != nil {
-		ReturnError(w, err, "Internal server error checking url in db", http.StatusInternalServerError)
+		ReturnError(w, err, "Invalid URL", http.StatusBadRequest)
 		return
 	}
-	if urlInDB {
-		ReturnError(w, err, "URL already in DB", http.StatusConflict)
-		return
-	}
-	shortCode := createShortCode(url)
+
+	// Create Random URL Short code
+	shortCode := createShortCode(_url)
 	// Store new content on db
-	responseData, err := s.saveShortenURL(url, shortCode)
+	responseData, err := s.saveShortenURL(_url, shortCode)
 	if err != nil {
 		ReturnError(w, err, "Internal server error with DB", http.StatusInternalServerError)
 		return

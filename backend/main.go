@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strconv"
 	"syscall"
 	"url-shortening/server"
@@ -14,7 +15,8 @@ import (
 
 func main() {
 	// Load environment variables from .env if present
-	if err := godotenv.Load(); err != nil {
+	envPath := filepath.Join("..", ".env")
+	if err := godotenv.Load(envPath); err != nil {
 		log.Println("No .env file found or couldn't load it; falling back to environment variables")
 	}
 
@@ -39,8 +41,8 @@ func main() {
 	// Start server (go routine)
 	go func() {
 		http.HandleFunc("/shorten", app.CreateURL)
-		http.HandleFunc("/shorten/{shortCode}", app.HandleShortCode)
-		http.HandleFunc("/shorten/{shortCode}/stats", app.GetStatsURL)
+		http.HandleFunc("/{shortCode}", app.HandleShortCode)
+		http.HandleFunc("/{shortCode}/stats", app.GetStatsURL)
 
 		log.Println("Server starting on :8080")
 		if err := http.ListenAndServe(":8080", nil); err != nil {

@@ -11,13 +11,13 @@ jobs:
     
     steps:      
       - name: Get Into Repository and Update
-        working-directory: ~/nanolinq
+        working-directory: /home/ianchu0317/nanolinq
         run: |
           git checkout main
           git pull
       
       - name: Restart containers
-        working-directory: ~/nanolinq
+        working-directory: /home/ianchu0317/nanolinq
         run: |
           docker compose down 
           docker compose up -d --build

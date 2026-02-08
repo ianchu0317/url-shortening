@@ -21,16 +21,22 @@ const errorMessage = document.getElementById('errorMessage');
 const statsForm = document.getElementById('statsForm');
 const codeInput = document.getElementById('codeInput');
 const statsResult = document.getElementById('statsResult');
+const successStatsDiv = document.getElementById('successStats');
 const errorStatsDiv = document.getElementById('errorStats');
+const successStatsMessage = document.getElementById('successStatsMessage');
 const errorStatsMessage = document.getElementById('errorStatsMessage');
 const originalUrl = document.getElementById('originalUrl');
 const shortCode = document.getElementById('shortCode');
 const clicks = document.getElementById('clicks');
 const createdAt = document.getElementById('createdAt');
 const lastAccessed = document.getElementById('lastAccessed');
+const deleteBtn = document.getElementById('deleteBtn');
 
 // Store current short code
 let currentShortCode = '';
+
+// Store current short code being viewed
+let viewingShortCode = '';
 
 // Tab switching
 tabShorten.addEventListener('click', () => {
@@ -127,6 +133,7 @@ statsForm.addEventListener('submit', async (e) => {
     const code = codeInput.value.trim();
     
     statsResult.classList.add('hidden');
+    successStatsDiv.classList.add('hidden');
     errorStatsDiv.classList.add('hidden');
     
     try {
@@ -134,9 +141,54 @@ statsForm.addEventListener('submit', async (e) => {
         const data = await response.json();
         
         if (response.ok) {
+            viewingShortCode = code; // Store for delete
             displayStats(data);
         } else {
             showStatsError(data.error || 'Short code not found');
+        }
+    } catch (error) {
+        showStatsError('Network error. Please try again.');
+        console.error('Error:', error);
+    }
+});
+
+// Handle delete button
+deleteBtn.addEventListener('click', async () => {
+    // Confirmation dialog
+    const confirmed = confirm(
+        `Are you sure you want to delete short code "${viewingShortCode}"?\n\n` +
+        'This action cannot be undone.'
+    );
+    
+    if (!confirmed) return;
+    
+    try {
+        const response = await fetch(`${API_URL}/${viewingShortCode}`, {
+            method: 'DELETE',
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Hide stats result
+            statsResult.classList.add('hidden');
+            errorStatsDiv.classList.add('hidden');
+            
+            // Show success message
+            showStatsSuccess('Short code deleted successfully');
+            
+            // Clear input
+            codeInput.value = '';
+            viewingShortCode = '';
+            
+            // Optional: Switch back to Shorten tab after 2 seconds
+            setTimeout(() => {
+                switchTab('shorten');
+                successStatsDiv.classList.add('hidden');
+            }, 2000);
+            
+        } else {
+            showStatsError(data.error || 'Failed to delete short code');
         }
     } catch (error) {
         showStatsError('Network error. Please try again.');
@@ -174,6 +226,12 @@ function formatDate(dateString) {
 function showError(message) {
     errorMessage.textContent = message;
     errorDiv.classList.remove('hidden');
+}
+
+// Show success message
+function showStatsSuccess(message) {
+    successStatsMessage.textContent = message;
+    successStatsDiv.classList.remove('hidden');
 }
 
 function showStatsError(message) {

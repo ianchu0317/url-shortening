@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NanoLinq - URL Statistics</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>URL Statistics</h1>
+            <p class="tagline">View analytics for your shortened URL</p>
+        </header>
+
+        <!-- Form -->
+        <form id="statsForm" class="form">
+            <input 
+                type="text" 
+                id="codeInput" 
+                class="input" 
+                placeholder="Enter short code (e.g., abc123)"
+                required
+            >
+            <button type="submit" class="btn-primary">Get Statistics</button>
+        </form>
+
+        <!-- Stats Result (hidden by default) -->
+        <div id="statsResult" class="stats-result hidden">
+            <div class="stat-item">
+                <span class="stat-label">Original URL:</span>
+                <a id="originalUrl" href="#" target="_blank" class="stat-value"></a>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Short Code:</span>
+                <span id="shortCode" class="stat-value"></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Total Clicks:</span>
+                <span id="clicks" class="stat-value"></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Created At:</span>
+                <span id="createdAt" class="stat-value"></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Last Accessed:</span>
+                <span id="lastAccessed" class="stat-value"></span>
+            </div>
+        </div>
+
+        <!-- Error (hidden by default) -->
+        <div id="error" class="error hidden">
+            <p id="errorMessage"></p>
+        </div>
+
+        <!-- Back link -->
+        <div class="stats-link">
+            <a href="../index.html">← Back to Home</a>
+        </div>
+    </div>
+
+    <script src="../js/stats.js"></script>
+</body>
+</html>

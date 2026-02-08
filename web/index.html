@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NanoLinq - URL Shortener</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>NanoLinq</h1>
+            <p class="tagline">Shorten your URLs in seconds</p>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button id="tabShorten" class="tab-btn active">Shorten URL</button>
+            <button id="tabStats" class="tab-btn">View Stats</button>
+        </div>
+
+        <!-- Tab Content: Shorten -->
+        <div id="contentShorten" class="tab-content active">
+            <form id="shortenForm" class="form">
+                <input 
+                    type="text" 
+                    id="urlInput" 
+                    class="input" 
+                    placeholder="https://example.com/your-long-url"
+                    required
+                >
+                <button type="submit" class="btn-primary">Create Link</button>
+            </form>
+
+            <!-- Result -->
+            <div id="result" class="result hidden">
+                <div class="result-section">
+                    <p class="result-label">Your short URL:</p>
+                    <div class="result-url">
+                        <a id="shortUrl" href="#" target="_blank"></a>
+                        <button id="copyBtn" class="btn-copy">Copy</button>
+                    </div>
+                </div>
+                
+                <div class="result-section">
+                    <p class="result-label">Access the stats with code:</p>
+                    <div class="result-code">
+                        <span id="displayCode" class="code-text"></span>
+                        <button id="viewStatsBtn" class="btn-secondary-small">View Stats</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error -->
+            <div id="error" class="error hidden">
+                <p id="errorMessage"></p>
+            </div>
+        </div>
+
+        <!-- Tab Content: Stats -->
+        <div id="contentStats" class="tab-content">
+            <form id="statsForm" class="form">
+                <input 
+                    type="text" 
+                    id="codeInput" 
+                    class="input" 
+                    placeholder="Enter short code (e.g., abc123)"
+                    required
+                >
+                <button type="submit" class="btn-secondary">Get Statistics</button>
+            </form>
+
+            <!-- Stats Result -->
+            <div id="statsResult" class="stats-result hidden">
+                <div class="stat-item">
+                    <span class="stat-label">Original URL:</span>
+                    <a id="originalUrl" href="#" target="_blank" class="stat-value"></a>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Short Code:</span>
+                    <span id="shortCode" class="stat-value"></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Total Clicks:</span>
+                    <span id="clicks" class="stat-value"></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Created At:</span>
+                    <span id="createdAt" class="stat-value"></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Last Accessed:</span>
+                    <span id="lastAccessed" class="stat-value"></span>
+                </div>
+                
+                <!-- Delete button -->
+                <div class="stat-actions">
+                    <button id="deleteBtn" class="btn-danger">Delete Short Code</button>
+                </div>
+            </div>
+
+            <!-- Success message -->
+            <div id="successStats" class="success hidden">
+                <p id="successStatsMessage"></p>
+            </div>
+
+            <!-- Error Stats -->
+            <div id="errorStats" class="error hidden">
+                <p id="errorStatsMessage"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/index.js"></script>
+</body>
+</html>

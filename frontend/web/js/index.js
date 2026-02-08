@@ -1,7 +1,13 @@
 const API_URL = 'https://api-nanolinq.ianchenn.com';
 
-// Get DOM elements
-const form = document.getElementById('shortenForm');
+// Tab elements
+const tabShorten = document.getElementById('tabShorten');
+const tabStats = document.getElementById('tabStats');
+const contentShorten = document.getElementById('contentShorten');
+const contentStats = document.getElementById('contentStats');
+
+// Shorten form elements
+const shortenForm = document.getElementById('shortenForm');
 const urlInput = document.getElementById('urlInput');
 const resultDiv = document.getElementById('result');
 const errorDiv = document.getElementById('error');
@@ -9,13 +15,47 @@ const shortUrlLink = document.getElementById('shortUrl');
 const copyBtn = document.getElementById('copyBtn');
 const errorMessage = document.getElementById('errorMessage');
 
-// Handle form submit
-form.addEventListener('submit', async (e) => {
+// Stats form elements
+const statsForm = document.getElementById('statsForm');
+const codeInput = document.getElementById('codeInput');
+const statsResult = document.getElementById('statsResult');
+const errorStatsDiv = document.getElementById('errorStats');
+const errorStatsMessage = document.getElementById('errorStatsMessage');
+const originalUrl = document.getElementById('originalUrl');
+const shortCode = document.getElementById('shortCode');
+const clicks = document.getElementById('clicks');
+const createdAt = document.getElementById('createdAt');
+const lastAccessed = document.getElementById('lastAccessed');
+
+// Tab switching
+tabShorten.addEventListener('click', () => {
+    switchTab('shorten');
+});
+
+tabStats.addEventListener('click', () => {
+    switchTab('stats');
+});
+
+function switchTab(tab) {
+    if (tab === 'shorten') {
+        tabShorten.classList.add('active');
+        tabStats.classList.remove('active');
+        contentShorten.classList.add('active');
+        contentStats.classList.remove('active');
+    } else {
+        tabStats.classList.add('active');
+        tabShorten.classList.remove('active');
+        contentStats.classList.add('active');
+        contentShorten.classList.remove('active');
+    }
+}
+
+// Handle shorten form submit
+shortenForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const url = urlInput.value.trim();
     
-    // Hide previous results/errors
     resultDiv.classList.add('hidden');
     errorDiv.classList.add('hidden');
     
@@ -31,17 +71,14 @@ form.addEventListener('submit', async (e) => {
         const data = await response.json();
         
         if (response.ok) {
-            // Success - show result
             const shortUrl = `${API_URL}/${data.shortCode}`;
             shortUrlLink.href = shortUrl;
             shortUrlLink.textContent = shortUrl;
             resultDiv.classList.remove('hidden');
         } else {
-            // Error from backend
             showError(data.error || 'Failed to create short URL');
         }
     } catch (error) {
-        // Network error
         showError('Network error. Please try again.');
         console.error('Error:', error);
     }
@@ -51,7 +88,6 @@ form.addEventListener('submit', async (e) => {
 copyBtn.addEventListener('click', () => {
     const url = shortUrlLink.href;
     navigator.clipboard.writeText(url).then(() => {
-        // Visual feedback
         copyBtn.textContent = 'Copied!';
         setTimeout(() => {
             copyBtn.textContent = 'Copy';
@@ -61,8 +97,63 @@ copyBtn.addEventListener('click', () => {
     });
 });
 
-// Show error message
+// Handle stats form submit
+statsForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const code = codeInput.value.trim();
+    
+    statsResult.classList.add('hidden');
+    errorStatsDiv.classList.add('hidden');
+    
+    try {
+        const response = await fetch(`${API_URL}/${code}/stats`);
+        const data = await response.json();
+        
+        if (response.ok) {
+            displayStats(data);
+        } else {
+            showStatsError(data.error || 'Short code not found');
+        }
+    } catch (error) {
+        showStatsError('Network error. Please try again.');
+        console.error('Error:', error);
+    }
+});
+
+// Display stats
+function displayStats(data) {
+    originalUrl.href = data.url;
+    originalUrl.textContent = data.url;
+    shortCode.textContent = data.shortCode;
+    clicks.textContent = data.clicks || 0;
+    createdAt.textContent = formatDate(data.createdAt);
+    lastAccessed.textContent = data.lastAccessed 
+        ? formatDate(data.lastAccessed) 
+        : 'Never';
+    
+    statsResult.classList.remove('hidden');
+}
+
+// Format date
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+// Show errors
 function showError(message) {
     errorMessage.textContent = message;
     errorDiv.classList.remove('hidden');
+}
+
+function showStatsError(message) {
+    errorStatsMessage.textContent = message;
+    errorStatsDiv.classList.remove('hidden');
 }

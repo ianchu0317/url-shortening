@@ -213,3 +213,122 @@ p {
 .hidden {
   display: none;
 }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  border-bottom: 2px solid rgba(0, 217, 255, 0.2);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: var(--space-md);
+  font-family: var(--font-main);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-gray);
+  background-color: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+  color: var(--color-white);
+}
+
+.tab-btn.active {
+  color: var(--color-cyan);
+  border-bottom-color: var(--color-cyan);
+}
+
+/* Tab Content */
+.tab-content {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Button Secondary (para stats) */
+.btn-secondary {
+  width: 100%;
+  padding: 1rem;
+  font-family: var(--font-main);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-white);
+  background-color: rgba(0, 217, 255, 0.2);
+  border: 2px solid var(--color-cyan);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(0, 217, 255, 0.3);
+  border-color: var(--color-white);
+  transform: translateY(-2px);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
+}
+
+/* Stats Result */
+.stats-result {
+  padding: var(--space-lg);
+  background-color: rgba(0, 217, 255, 0.05);
+  border: 2px solid rgba(0, 217, 255, 0.3);
+  border-radius: var(--radius-lg);
+  margin-top: var(--space-lg);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+}
+
+.stat-item:last-child {
+  border-bottom: none;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--color-gray);
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 1.125rem;
+  color: var(--color-white);
+  word-break: break-all;
+}
+
+.stat-value a {
+  color: var(--color-cyan);
+  text-decoration: none;
+}
+
+.stat-value a:hover {
+  text-decoration: underline;
+}

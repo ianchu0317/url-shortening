@@ -14,30 +14,81 @@
             <p class="tagline">Shorten your URLs in seconds</p>
         </header>
 
-        <!-- Form -->
-        <form id="shortenForm" class="form">
-            <input 
-                type="text" 
-                id="urlInput" 
-                class="input" 
-                placeholder="https://example.com/your-long-url"
-                required
-            >
-            <button type="submit" class="btn-primary">Create Link</button>
-        </form>
+        <!-- Tabs -->
+        <div class="tabs">
+            <button id="tabShorten" class="tab-btn active">Shorten URL</button>
+            <button id="tabStats" class="tab-btn">View Stats</button>
+        </div>
 
-        <!-- Result (hidden by default) -->
-        <div id="result" class="result hidden">
-            <p class="result-label">Your short URL:</p>
-            <div class="result-url">
-                <a id="shortUrl" href="#" target="_blank"></a>
-                <button id="copyBtn" class="btn-copy">Copy</button>
+        <!-- Tab Content: Shorten -->
+        <div id="contentShorten" class="tab-content active">
+            <form id="shortenForm" class="form">
+                <input 
+                    type="text" 
+                    id="urlInput" 
+                    class="input" 
+                    placeholder="https://example.com/your-long-url"
+                    required
+                >
+                <button type="submit" class="btn-primary">Create Link</button>
+            </form>
+
+            <!-- Result -->
+            <div id="result" class="result hidden">
+                <p class="result-label">Your short URL:</p>
+                <div class="result-url">
+                    <a id="shortUrl" href="#" target="_blank"></a>
+                    <button id="copyBtn" class="btn-copy">Copy</button>
+                </div>
+            </div>
+
+            <!-- Error -->
+            <div id="error" class="error hidden">
+                <p id="errorMessage"></p>
             </div>
         </div>
 
-        <!-- Error (hidden by default) -->
-        <div id="error" class="error hidden">
-            <p id="errorMessage"></p>
+        <!-- Tab Content: Stats -->
+        <div id="contentStats" class="tab-content">
+            <form id="statsForm" class="form">
+                <input 
+                    type="text" 
+                    id="codeInput" 
+                    class="input" 
+                    placeholder="Enter short code (e.g., abc123)"
+                    required
+                >
+                <button type="submit" class="btn-secondary">Get Statistics</button>
+            </form>
+
+            <!-- Stats Result -->
+            <div id="statsResult" class="stats-result hidden">
+                <div class="stat-item">
+                    <span class="stat-label">Original URL:</span>
+                    <a id="originalUrl" href="#" target="_blank" class="stat-value"></a>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Short Code:</span>
+                    <span id="shortCode" class="stat-value"></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Total Clicks:</span>
+                    <span id="clicks" class="stat-value"></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Created At:</span>
+                    <span id="createdAt" class="stat-value"></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Last Accessed:</span>
+                    <span id="lastAccessed" class="stat-value"></span>
+                </div>
+            </div>
+
+            <!-- Error Stats -->
+            <div id="errorStats" class="error hidden">
+                <p id="errorStatsMessage"></p>
+            </div>
         </div>
     </div>
 

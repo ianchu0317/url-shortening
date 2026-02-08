@@ -14,19 +14,20 @@ import (
 )
 
 // CORS Middleware
-func corsHandler(handler http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
+		// Handle preflight OPTIONS request
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
 
-		handler.ServeHTTP(w, r)
-	})
+		next(w, r)
+	}
 }
 
 func main() {
@@ -56,12 +57,13 @@ func main() {
 
 	// Start server (go routine)
 	go func() {
-		http.HandleFunc("/shorten", app.CreateURL)
-		http.HandleFunc("/{shortCode}", app.HandleShortCode)
-		http.HandleFunc("/{shortCode}/stats", app.GetStatsURL)
+		// Apply CORS middleware to all routes
+		http.HandleFunc("/shorten", corsMiddleware(app.CreateURL))
+		http.HandleFunc("/{shortCode}", corsMiddleware(app.HandleShortCode))
+		http.HandleFunc("/{shortCode}/stats", corsMiddleware(app.GetStatsURL))
 
 		log.Println("Server starting on :8080")
-		if err := http.ListenAndServe(":8080", corsHandler(http.DefaultServeMux)); err != nil {
+		if err := http.ListenAndServe(":8080", nil); err != nil {
 			log.Fatal("Failed starting server")
 		}
 	}()

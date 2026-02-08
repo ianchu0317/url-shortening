@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NanoLinq - URL Shortener</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>NanoLinq</h1>
+            <p class="tagline">Shorten your URLs in seconds</p>
+        </header>
+
+        <!-- Form -->
+        <form id="shortenForm" class="form">
+            <input 
+                type="text" 
+                id="urlInput" 
+                class="input" 
+                placeholder="https://example.com/your-long-url"
+                required
+            >
+            <button type="submit" class="btn-primary">Create Link</button>
+        </form>
+
+        <!-- Result (hidden by default) -->
+        <div id="result" class="result hidden">
+            <p class="result-label">Your short URL:</p>
+            <div class="result-url">
+                <a id="shortUrl" href="#" target="_blank"></a>
+                <button id="copyBtn" class="btn-copy">Copy</button>
+            </div>
+        </div>
+
+        <!-- Error (hidden by default) -->
+        <div id="error" class="error hidden">
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+
+    <script src="js/index.js"></script>
+</body>
+</html>

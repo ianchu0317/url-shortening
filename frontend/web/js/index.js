@@ -12,7 +12,9 @@ const urlInput = document.getElementById('urlInput');
 const resultDiv = document.getElementById('result');
 const errorDiv = document.getElementById('error');
 const shortUrlLink = document.getElementById('shortUrl');
+const displayCode = document.getElementById('displayCode');
 const copyBtn = document.getElementById('copyBtn');
+const viewStatsBtn = document.getElementById('viewStatsBtn');
 const errorMessage = document.getElementById('errorMessage');
 
 // Stats form elements
@@ -26,6 +28,9 @@ const shortCode = document.getElementById('shortCode');
 const clicks = document.getElementById('clicks');
 const createdAt = document.getElementById('createdAt');
 const lastAccessed = document.getElementById('lastAccessed');
+
+// Store current short code
+let currentShortCode = '';
 
 // Tab switching
 tabShorten.addEventListener('click', () => {
@@ -71,9 +76,15 @@ shortenForm.addEventListener('submit', async (e) => {
         const data = await response.json();
         
         if (response.ok) {
+            // Store short code
+            currentShortCode = data.shortCode;
+            
+            // Display results
             const shortUrl = `${API_URL}/${data.shortCode}`;
             shortUrlLink.href = shortUrl;
             shortUrlLink.textContent = shortUrl;
+            displayCode.textContent = data.shortCode;
+            
             resultDiv.classList.remove('hidden');
         } else {
             showError(data.error || 'Failed to create short URL');
@@ -95,6 +106,18 @@ copyBtn.addEventListener('click', () => {
     }).catch(err => {
         console.error('Failed to copy:', err);
     });
+});
+
+// Handle view stats button
+viewStatsBtn.addEventListener('click', () => {
+    // Switch to stats tab
+    switchTab('stats');
+    
+    // Auto-fill code input
+    codeInput.value = currentShortCode;
+    
+    // Auto-submit (optional)
+    statsForm.dispatchEvent(new Event('submit'));
 });
 
 // Handle stats form submit

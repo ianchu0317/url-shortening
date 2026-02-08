@@ -1,5 +1,14 @@
 services:
 
+  web:
+    image: nginx:1.28.2
+    container_name: nanolinq-web
+    ports:
+      - "80:80"
+    volumes:
+      - ./web:/usr/share/nginx/html:ro
+    depends_on: [api, db]
+
   api:
     build: 
       context: ./backend

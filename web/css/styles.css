@@ -432,3 +432,50 @@ p {
   color: #86efac;
   margin-bottom: 0;
 }
+
+/* Footer */
+.footer {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-lg);
+  text-align: center;
+  border-top: 1px solid rgba(0, 217, 255, 0.2);
+}
+
+.github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  color: var(--color-gray);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 217, 255, 0.2);
+  border-radius: var(--radius-sm);
+  transition: all 0.3s ease;
+}
+
+.github-link:hover {
+  color: var(--color-cyan);
+  border-color: var(--color-cyan);
+  background-color: rgba(0, 217, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.github-link svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .footer {
+    margin-top: var(--space-md);
+  }
+  
+  .github-link {
+    font-size: 0.8rem;
+    padding: 0.65rem 1.25rem;
+  }
+}

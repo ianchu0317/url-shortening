@@ -189,16 +189,19 @@ func (s *shortenServer) GetStatsURL(w http.ResponseWriter, r *http.Request) {
 	shortInDB, err := s.isShortCodeInDB(shortCode)
 	if err != nil {
 		ReturnError(w, err, "Error accessing DB", http.StatusInternalServerError)
+		return
 	}
 	// Not found 404
 	if !shortInDB {
 		ReturnError(w, nil, "No shortCode in DB", http.StatusBadRequest)
+		return
 	}
 
 	// Retrieve short code stats
 	responseData, err := s.retrieveOriginalURL(shortCode)
 	if err != nil {
 		ReturnError(w, err, "Error accessing DB", http.StatusInternalServerError)
+		return
 	}
 
 	// 200 Status OK

@@ -38,5 +38,15 @@ func ReturnJSON(w http.ResponseWriter, r *http.Request, responseData *ResponseCr
 // ReturnError takes an error, message and status code and returns error to user / and log
 func ReturnError(w http.ResponseWriter, err error, message string, statusCode int) {
 	log.Printf("%s: %v", message, err)
-	http.Error(w, message, statusCode)
+
+	//http.Error(w, message, statusCode)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	if err := json.NewEncoder(w).Encode(map[string]string{
+		"error": message,
+	}); err != nil {
+		log.Fatalf("Internal server error converting to JSON, %v", err)
+		http.Error(w, "Internal server error converting to JSON", http.StatusInternalServerError)
+		return
+	}
 }

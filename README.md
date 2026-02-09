@@ -1,6 +1,9 @@
 # url-shortening
 Simple URL Shortening Service in Go
 
+The project is deployed on https://nanolinq.ianchenn.com 
+
+
 ## Getting Started
 
 To run and deploy the server run the following commands in order
@@ -24,9 +27,9 @@ Then the services will be open in:
 - [X] Endpoints Testing
 - [X] Endpoints Documentation
 - [X] Create Docker Compose
-- [ ] Basic Deploy: CI/CD
+- [X] Basic Deploy: CI/CD
     - Buy Domain and VPS
-- [ ] Create Frontend
+- [X] Create Frontend
 - Add new features
 
 ## Endpoints requests and response format
